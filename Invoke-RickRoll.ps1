@@ -53,7 +53,7 @@ try
 ## Open the background song
 $script = @'
    $player = New-Object -ComObject 'MediaPlayer.MediaPlayer'
-   $player.Open("http://www.leeholmes.com/projects/ps_html5/background.mp3")
+   $player.Open("http://cbehelpme.com/wp-content/uploads/2019/03/Rick-Astley-Never-Gonna-Give-You-Up-HQ.mp3")
    $player
 '@
 
