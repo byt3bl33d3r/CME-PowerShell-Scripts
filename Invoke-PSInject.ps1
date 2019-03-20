@@ -41,7 +41,7 @@ Param(
     $ProcName,
     
     [Parameter(Position = 6, Mandatory = $true)]
-    [ValidateLength(1,3000)]
+    [ValidateLength(1,1200)]
     [String]
     $PoshCode,
 
@@ -639,10 +639,10 @@ $RemoteScriptBlock = {
         
         # NtCreateThreadEx is only ever called on Vista and Win7. NtCreateThreadEx is not exported by ntdll.dll in Windows XP
         if (([Environment]::OSVersion.Version -ge (New-Object 'Version' 6,0)) -and ([Environment]::OSVersion.Version -lt (New-Object 'Version' 6,2))) {
-		    $NtCreateThreadExAddr = Get-ProcAddress NtDll.dll NtCreateThreadEx
+            $NtCreateThreadExAddr = Get-ProcAddress NtDll.dll NtCreateThreadEx
             $NtCreateThreadExDelegate = Get-DelegateType @([IntPtr].MakeByRefType(), [UInt32], [IntPtr], [IntPtr], [IntPtr], [IntPtr], [Bool], [UInt32], [UInt32], [UInt32], [IntPtr]) ([UInt32])
             $NtCreateThreadEx = [System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer($NtCreateThreadExAddr, $NtCreateThreadExDelegate)
-		    $Win32Functions | Add-Member -MemberType NoteProperty -Name NtCreateThreadEx -Value $NtCreateThreadEx
+            $Win32Functions | Add-Member -MemberType NoteProperty -Name NtCreateThreadEx -Value $NtCreateThreadEx
         }
         
         $IsWow64ProcessAddr = Get-ProcAddress Kernel32.dll IsWow64Process
@@ -930,7 +930,7 @@ $RemoteScriptBlock = {
         $UnsafeNativeMethods = $SystemAssembly.GetType('Microsoft.Win32.UnsafeNativeMethods')
         # Get a reference to the GetModuleHandle and GetProcAddress methods
         $GetModuleHandle = $UnsafeNativeMethods.GetMethod('GetModuleHandle')
-        $GetProcAddress = $UnsafeNativeMethods.GetMethod('GetProcAddress')
+        $GetProcAddress = $UnsafeNativeMethods.GetMethod('GetProcAddress', [Type[]]@([System.Runtime.InteropServices.HandleRef], [String]))
         # Get a handle to the module specified
         $Kern32Handle = $GetModuleHandle.Invoke($null, @($Module))
         $tmpPtr = New-Object IntPtr
